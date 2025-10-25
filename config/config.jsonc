@@ -1,0 +1,68 @@
+{
+    // Welcome to config of Caliber Split Magazine Cases by Szonszczyk
+
+    // Cases size
+    "CaseWidth": 10, // 1-12 - default: 10
+    "CaseHeight": 10, // 1-12 - default: 10
+
+    // ### 1. Choose your own Trader!
+    // One one option can be "true"!
+    
+    // Add cases to Skier for Euro
+    "CasesOnSkier": true,
+    // Euro price on Skier
+    "EuroPrice": 1100,
+
+    // Add cases to Peacekeeper for USD
+    "CasesOnPeacekeeper": false,
+    // USD price on Peacekeeper
+    "USDPrice": 1500,
+
+    // Add cases to Ref for GP Coins
+    "CasesOnRef": false,
+    // GP coins price on Ref
+    "GpCoinPrice": 25,
+
+    // Add cases to Jaeger for Roubles
+    "CasesOnJaeger": false,
+    // Roubles Multiplier - price is handbookPriceRoubles*RoublesPriceMultiplier on Jaeger
+    "RoublesPriceMultiplier": 1.25,
+
+    // Add cases to Prapor for barter
+    "CasesOnPrapor": false,
+    // MongoID (https://db.sp-tarkov.com/search) of item to barter for
+    "BarterType": "5c127c4486f7745625356c13",
+    // Barter price on Prapor
+    "BarterPrice": 1,
+
+    // ### 2. Generation settings
+
+    // Only use known calibers from db/Calibers file
+    "UseOnlyKnownCalibers": false, // true/false - default: false
+    // Enable only if you know what calibers should be added from mods
+    // Add missing ones to db/Calibers by creating a new json file based on existing one
+
+    // Remove known bad calibers from cases generations
+    "RemoveBadCalibers": true, // true/false - default: true
+    "BadCalibers": [
+        "Caliber40mmRU",
+        "Caliber30x29",
+        "Caliber20x1mm"
+    ],
+
+    // ### 3. Cases configuration
+
+    // Change background color of case - use only BSG colors
+    "BackgroundColor": "red",
+    // Change background color of case - if using ColorConverterAPI
+    "BackgroundColorColorConverterAPI": "#cf404e", // hex color
+    // Width and Height of case in eq
+    "Width": 1,
+    "Height": 2,
+
+    // Should cases are blacklisted on Flea
+    "FleaMarketBlacklisted": true, // true/false - default: true
+
+    // Default Roubles price
+    "HandbookPriceRoubles": 200000
+}
