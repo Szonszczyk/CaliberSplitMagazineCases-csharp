@@ -1,4 +1,5 @@
 ﻿using CaliberSplitMagazineCases.Interfaces;
+using CaliberSplitMagazineCases.Loaders;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -10,16 +11,23 @@ using SPTarkov.Server.Core.Services;
 
 namespace CaliberSplitMagazineCases
 {
-    internal class ItemGenerator(ISptLogger<CaliberSplitMagazineCases> logger, DatabaseService databaseService)
+    internal class ItemGenerator(
+        ISptLogger<CaliberSplitMagazineCases> logger,
+        DatabaseService databaseService,
+        ConfigLoader configLoader,
+        ModDatabaseLoader modDatabaseLoader,
+        CustomItemCreator customItemCreator
+    )
     {
         private readonly Dictionary<MongoId, TemplateItem> items = databaseService.GetItems();
         private bool SaveIDsDatabase = false;
         private CustomBarterConfig customBarterConfig = new();
+        private readonly ConfigData modConfig = configLoader.Config;
 
-        public void GenerateItems(ConfigData config, ModDatabaseLoader modDatabaseLoader, CustomItemCreator customItemCreator)
+        public void GenerateItems()
         {
-            customBarterConfig = CreateCustomBarterConfig(config, items, logger, "CaliberSplitMagazineCases");
-            var magazines = LoadMagazines(config, modDatabaseLoader);
+            customBarterConfig = CreateCustomBarterConfig(modConfig, items, logger, "CaliberSplitMagazineCases");
+            var magazines = LoadMagazines(modConfig, modDatabaseLoader);
 
             var itemCaseFilter = items["59fb042886f7746c5005a7b2"]?.Properties?.Grids?.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter;
             var thiccItemCaseFilter = items["5c0a840b86f7742ffa4f2482"]?.Properties?.Grids?.FirstOrDefault()?.Properties?.Filters?.FirstOrDefault()?.Filter;
@@ -35,14 +43,14 @@ namespace CaliberSplitMagazineCases
                     ParentId = "5795f317245977243854e041",
                     HandbookParentId = "5b5f6fa186f77409407a7eb7",
                     NewId = ResolveMongoId(modDatabaseLoader, $"CASEID{magazineType}"),
-                    FleaPriceRoubles = Math.Floor(config.HandbookPriceRoubles * 1.3),
-                    HandbookPriceRoubles = config.HandbookPriceRoubles,
+                    FleaPriceRoubles = Math.Floor(modConfig.HandbookPriceRoubles * 1.3),
+                    HandbookPriceRoubles = modConfig.HandbookPriceRoubles,
                     OverrideProperties = new TemplateItemProperties
                     {
-                        BackgroundColor = IsPluginLoaded() ? config.BackgroundColorColorConverterAPI : config.BackgroundColor,
+                        BackgroundColor = IsPluginLoaded() ? modConfig.BackgroundColorColorConverterAPI : modConfig.BackgroundColor,
                         Weight = 0,
-                        Width = config.Width,
-                        Height = config.Height
+                        Width = modConfig.Width,
+                        Height = modConfig.Height
                     },
                     Locales = new Dictionary<string, LocaleDetails>
                     {
@@ -64,8 +72,8 @@ namespace CaliberSplitMagazineCases
                     Prototype = "55d329c24bdc2d892f8b4567",
                     Properties = new()
                     {
-                        CellsH = config.CaseHeight,
-                        CellsV = config.CaseWidth,
+                        CellsH = modConfig.CaseHeight,
+                        CellsV = modConfig.CaseWidth,
                         Filters = [
                             new GridFilter {
                                 Filter = magazineArray
@@ -80,7 +88,7 @@ namespace CaliberSplitMagazineCases
                 newItem.OverrideProperties.Grids = [wholeCaseGrid];
                 var customItemConfig = new CustomItemConfig
                 {
-                    FleaBlacklisted = config.FleaMarketBlacklisted
+                    FleaBlacklisted = modConfig.FleaMarketBlacklisted
                 };
                 customItemCreator.AddItemToDatabase(newItem, customItemConfig, customBarterConfig);
 
@@ -201,8 +209,8 @@ namespace CaliberSplitMagazineCases
                     return new CustomBarterConfig
                     {
                         TraderId = Traders.PRAPOR,
-                        Price = (int)Math.Floor(config.RoublesPriceMultiplier * config.HandbookPriceRoubles),
-                        Barter = ItemTpl.MONEY_ROUBLES
+                        Price = config.BarterPrice,
+                        Barter = config.BarterType
                     };
                 } else
                 {

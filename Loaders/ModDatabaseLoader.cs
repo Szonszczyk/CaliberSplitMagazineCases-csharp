@@ -5,13 +5,14 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using System.Reflection;
 
-namespace CaliberSplitMagazineCases
+namespace CaliberSplitMagazineCases.Loaders
 {
     public class ModDatabaseLoader
     {
         private readonly string modFolder;
         private readonly JsonUtil _jsonutil;
         private readonly ISptLogger<CaliberSplitMagazineCases> _logger;
+        private readonly ModHelper _modHelper;
 
         public Dictionary<string, CaliberInfo> DbCaliber { get; private set; }
         public Dictionary<string, string> DbItemsIds { get; private set; }
@@ -22,6 +23,7 @@ namespace CaliberSplitMagazineCases
             modFolder = modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
             _jsonutil = jsonUtil;
             _logger = logger;
+            _modHelper = modHelper;
 
             DbCaliber = LoadDbCaliber(Path.Combine(modFolder, "db", "Calibers"), jsonUtil, logger);
             DbItemsIds = LoadOrCreateJSON(Path.Combine(modFolder, "db", "Ids", "idDatabase.json"), jsonUtil, logger);
@@ -33,16 +35,16 @@ namespace CaliberSplitMagazineCases
             string filePath = Path.Combine(modFolder, "db", "Ids", "idDatabase.json");
             string json = _jsonutil.Serialize(DbItemsIds);
             File.WriteAllText(filePath, json);
-            _logger.LogWithColor($"[CaliberSplitMagazineCases] File db/Ids/idDatabase.json has been changed", LogTextColor.Green);
+            _logger.LogWithColor($"[{GetType().Namespace}] File db/Ids/idDatabase.json has been changed", LogTextColor.Green);
         }
 
-        public static Dictionary<string, CaliberInfo> LoadDbCaliber(string directoryPath, JsonUtil jsonUtil, ISptLogger<CaliberSplitMagazineCases> logger)
+        public Dictionary<string, CaliberInfo> LoadDbCaliber(string directoryPath, JsonUtil jsonUtil, ISptLogger<CaliberSplitMagazineCases> logger)
         {
             var combinedData = new Dictionary<string, CaliberInfo>(StringComparer.OrdinalIgnoreCase);
 
             if (!Directory.Exists(directoryPath))
             {
-                logger.LogWithColor($"[CaliberSplitMagazineCases] Directory not found: {directoryPath}!", LogTextColor.Yellow);
+                logger.LogWithColor($"[{GetType().Namespace}] Directory not found: {directoryPath}!", LogTextColor.Yellow);
                 return combinedData;
             }
 
@@ -52,8 +54,8 @@ namespace CaliberSplitMagazineCases
             {
                 try
                 {
-                    string jsonContent = File.ReadAllText(file);
-                    var data = jsonUtil.Deserialize<Dictionary<string, CaliberInfo>>(jsonContent);
+
+                    var data = _modHelper.GetJsonDataFromFile<Dictionary<string, CaliberInfo>>(modFolder, file);
 
                     if (data == null)
                         continue;
@@ -65,20 +67,20 @@ namespace CaliberSplitMagazineCases
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWithColor($"[CaliberSplitMagazineCases] Error reading {Path.GetFileName(file)}: {ex.Message}", LogTextColor.Red);
+                    logger.LogWithColor($"[{GetType().Namespace}] Error reading {Path.GetFileName(file)}: {ex.Message}", LogTextColor.Red);
                 }
             }
 
             return combinedData;
         }
 
-        public static Dictionary<string, string> LoadOrCreateJSON(string filePath, JsonUtil jsonUtil, ISptLogger<CaliberSplitMagazineCases> logger)
+        public Dictionary<string, string> LoadOrCreateJSON(string filePath, JsonUtil jsonUtil, ISptLogger<CaliberSplitMagazineCases> logger)
         {
             string? directory = Path.GetDirectoryName(filePath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
-                logger.LogWithColor($"[CaliberSplitMagazineCases] Directory not found: {directory}! Creating folder...", LogTextColor.Green);
+                logger.LogWithColor($"[{GetType().Namespace}] Directory not found: {directory}! Creating folder...", LogTextColor.Green);
             }
 
             Dictionary<string, string> data;
@@ -87,7 +89,7 @@ namespace CaliberSplitMagazineCases
             {
                 data = [];
                 File.WriteAllText(filePath, jsonUtil.Serialize(data));
-                logger.LogWithColor($"[CaliberSplitMagazineCases] File in db/Ids/idDatabase.json not found. Creating file...", LogTextColor.Green);
+                logger.LogWithColor($"[{GetType().Namespace}] File in db/Ids/idDatabase.json not found. Creating file...", LogTextColor.Green);
             }
             else
             {
