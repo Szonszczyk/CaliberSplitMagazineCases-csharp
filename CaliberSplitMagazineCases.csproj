@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <!-- The two lines below will set the output path for the binaries -->
     <OutputPath>bin\$(Configuration)\$(ProjectName)\$(AssemblyName)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -28,6 +28,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot; &quot;C:\Games\SPT 4.0\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot;&#xD;&#xA;echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot; &quot;C:\Games\SPT 4.0\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot;" />
+    <Exec Command="echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot; &quot;C:\Games\SPT 4.0\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot;&#xD;&#xA;echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot; &quot;C:\Games\SPT 4.0\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot;&#xD;&#xA;echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot; &quot;C:\Games\SPT 4.0 DEV\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.dll&quot;&#xD;&#xA;echo f | xcopy /s /y /f &quot;C:\Programowanie\SPT 4.0 Mods\CaliberSplitMagazineCases\bin\Debug\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot; &quot;C:\Games\SPT 4.0 DEV\SPT\user\mods\CaliberSplitMagazineCases\CaliberSplitMagazineCases.pdb&quot;" />
   </Target>
 </Project>

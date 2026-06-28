@@ -116,7 +116,9 @@ namespace CaliberSplitMagazineCases
                 {
                     foreach(var ammo in filter)
                     {
-                        var ammoCaliber = items[ammo]?.Properties?.Caliber;
+                        items.TryGetValue(ammo, out var ammoItem);
+                        if (ammoItem == null) continue;
+                        var ammoCaliber = ammoItem.Properties?.Caliber;
                         if (ammoCaliber == null) continue;
                         if (config.UseOnlyKnownCalibers && !modDatabaseLoader.DbCaliberById.ContainsKey(ammoCaliber)) continue;
                         if (config.RemoveBadCalibers && config.BadCalibers.Contains(ammoCaliber)) continue;
