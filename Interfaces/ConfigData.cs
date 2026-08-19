@@ -24,6 +24,8 @@
         public string BarterType { get; set; } = "5c127c4486f7745625356c13";
         public int BarterPrice { get; set; } = 1;
 
+        public bool UseAmonyaTrader { get; set; } = false;
+
         // ### 2. Generation settings
         public bool UseOnlyKnownCalibers { get; set; } = false;
         public bool RemoveBadCalibers { get; set; } = true;
